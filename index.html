@@ -6,12 +6,13 @@
     <title>Math Quest Dashboard</title>
     <style>
         :root {
-            --bg-color: #1E1B4B;
+            --bg-color: #1E1B4B; 
             --card-bg: #2D2A6E;
             --text-main: #FFFFFF;
             --text-muted: #A5A3D1;
             --accent-pink: #FF69B4;
             --accent-yellow: #FFD700;
+            --success-green: #32CD32;
         }
 
         body {
@@ -19,70 +20,25 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
-            text-align: center;
+            padding: 15px;
         }
 
-        /* --- DASHBOARD STYLES --- */
-        #dashboard-view { display: block; }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            margin-bottom: 30px;
-        }
+        /* --- Dashboard Styles --- */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: rgba(255, 255, 255, 0.05); border-radius: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .stat-badge { display: flex; align-items: center; background-color: var(--card-bg); padding: 10px 20px; border-radius: 50px; border: 2px solid var(--accent-yellow); margin: 5px; }
+        .stat-badge span { font-size: 1.2em; margin-left: 5px; font-weight: bold; }
+        .level-bar { width: 100px; height: 10px; background-color: #4B4895; border-radius: 5px; margin-left: 10px; overflow: hidden; }
+        .level-fill { width: 0%; height: 100%; background-color: var(--accent-yellow); transition: width 0.3s ease; }
+        .title-section { text-align: center; flex-grow: 1; }
+        h2 { margin: 0; font-size: 1.5em; }
 
-        .profile-badge {
-            display: flex;
-            align-items: center;
-            background-color: var(--card-bg);
-            padding: 10px 20px;
-            border-radius: 50px;
-            border: 2px solid var(--accent-yellow);
-        }
+        .music-btn { background-color: var(--card-bg); color: var(--text-main); border: 2px solid var(--accent-pink); border-radius: 50px; padding: 8px 15px; cursor: pointer; font-weight: bold; margin: 5px; }
+        .music-btn:hover { background-color: var(--accent-pink); }
 
-        .profile-badge span { font-size: 1.2em; margin-left: 10px; font-weight: bold; }
-        
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 2px solid transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            border-color: var(--accent-pink);
-        }
-
-        .card-icon-container {
-            width: 100%;
-            height: 120px;
-            border-radius: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 4em;
-            margin-bottom: 15px;
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background-color: var(--card-bg); border-radius: 20px; padding: 20px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); border-color: var(--accent-pink); }
+        .card-icon-container { width: 100%; height: 120px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 4em; margin-bottom: 15px; }
 
         .bg-addition { background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%); }
         .bg-subtraction { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
@@ -93,237 +49,359 @@
         .bg-money { background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); }
 
         .card h3 { margin: 10px 0 5px 0; font-size: 1.4em; }
+        .card p { margin: 0; color: var(--text-muted); font-size: 0.9em; }
 
-        /* --- GAME VIEW STYLES --- */
-        #game-view { 
-            display: none; 
-            background-color: #FFF;
-            color: #333;
-            border: 4px solid var(--accent-yellow);
-            border-radius: 15px;
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 30px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
-        }
-
-        #game-view h1 { color: #1E1B4B; margin-top: 0; }
+        /* --- Quest View Styles --- */
+        .quest-container { background-color: var(--card-bg); border: 4px solid var(--accent-pink); border-radius: 20px; max-width: 600px; margin: 40px auto; padding: 40px 20px; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+        .quest-title { color: var(--accent-yellow); font-size: 2em; margin-bottom: 10px; }
         
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
+        /* Dynamic problem areas */
+        .problem-text { font-size: 4em; margin: 30px 0; font-weight: bold; color: var(--text-main); letter-spacing: 5px; }
+        .problem-canvas { margin: 20px auto; display: block; border-radius: 50%; background-color: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .problem-money { font-size: 3.5em; margin: 20px 0; line-height: 1.2; }
 
-        .back-btn {
-            background-color: #ccc;
-            color: #333;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .back-btn:hover { background-color: #aaa; }
-
-        .problem { font-size: 2.5em; margin: 30px 0; font-weight: bold; }
+        /* Input Groups */
+        .input-group { margin: 20px 0; font-size: 2em; font-weight: bold; }
+        input[type="number"] { font-size: 1em; padding: 10px; width: 120px; text-align: center; border: 3px solid var(--text-muted); border-radius: 12px; background-color: var(--bg-color); color: var(--text-main); outline: none; }
+        input[type="number"]:focus { border-color: var(--accent-yellow); }
         
-        input[type="number"] {
-            font-size: 1.5em;
-            padding: 10px;
-            width: 150px;
-            text-align: center;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-        }
+        /* Specific input sizing */
+        .input-time input { width: 80px; }
+        .input-fraction input { width: 80px; }
 
-        .submit-btn {
-            background-color: var(--accent-pink);
-            color: white;
-            font-size: 1.2em;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            font-weight: bold;
-        }
-
-        .submit-btn:hover { background-color: #e0529d; }
+        button.action-btn { background-color: var(--accent-pink); color: white; font-size: 1.2em; font-weight: bold; padding: 15px 30px; border: none; border-radius: 12px; cursor: pointer; margin-top: 20px; }
+        button.action-btn:hover { background-color: #ff47a3; }
+        button.back-btn { background-color: transparent; color: var(--text-muted); border: 2px solid var(--text-muted); margin-top: 30px; }
+        button.back-btn:hover { background-color: rgba(255,255,255,0.1); color: white; }
 
         .message { font-size: 1.3em; margin-top: 20px; height: 30px; font-weight: bold; }
-        .score-board { font-size: 1.3em; margin-top: 20px; font-weight: bold; color: #1E1B4B; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
+    <audio id="bgMusic" loop><source src="music.mp3" type="audio/mpeg"></audio>
+
+    <!-- ================= DASHBOARD VIEW ================= -->
     <div id="dashboard-view">
         <div class="header">
-            <div class="profile-badge">
-                🐒 <span>Level 12</span>
-            </div>
-            <h2>Royal Academy 🦄</h2>
-            <div class="profile-badge">
-                Gold: <span id="global-score">0</span>
+            <div class="stat-badge">Level <span id="level-display">0</span><div class="level-bar"><div class="level-fill" id="level-fill-bar"></div></div></div>
+            <div class="title-section"><h2>Lemaire Academy - Fantasy Edition 🦄</h2></div>
+            <div style="display: flex; align-items: center;">
+                <button class="music-btn" onclick="toggleMusic()">🎵 Music</button>
+                <div class="stat-badge">Gold: <span id="gold-display">0</span></div>
             </div>
         </div>
 
         <div class="grid-container">
-            <div class="card" onclick="startGame('Addition')">
-                <div class="card-icon-container bg-addition">➕</div>
-                <h3>Addition</h3>
-            </div>
-            <div class="card" onclick="startGame('Subtraction')">
-                <div class="card-icon-container bg-subtraction">➖</div>
-                <h3>Subtraction</h3>
-            </div>
-            <div class="card" onclick="startGame('Multiplication')">
-                <div class="card-icon-container bg-multiplication">👸✖️</div>
-                <h3>Multiplication</h3>
-            </div>
-            <div class="card" onclick="startGame('Division')">
-                <div class="card-icon-container bg-division">🏰➗</div>
-                <h3>Division</h3>
-            </div>
-            <div class="card" onclick="startGame('Fractions')">
-                <div class="card-icon-container bg-fractions">🍰</div>
-                <h3>Fractions</h3>
-            </div>
-            <div class="card" onclick="startGame('Time')">
-                <div class="card-icon-container bg-time">⏰</div>
-                <h3>Time</h3>
-            </div>
-            <div class="card" onclick="startGame('Money')">
-                <div class="card-icon-container bg-money">💎</div>
-                <h3>Money</h3>
-            </div>
+            <div class="card" onclick="startQuest('Addition')"><div class="card-icon-container bg-addition">➕</div><h3>Addition</h3><p>Double digits</p></div>
+            <div class="card" onclick="startQuest('Subtraction')"><div class="card-icon-container bg-subtraction">➖</div><h3>Subtraction</h3><p>Double digits</p></div>
+            <div class="card" onclick="startQuest('Multiplication')"><div class="card-icon-container bg-multiplication">👸✖️</div><h3>Multiplication</h3><p>Times tables</p></div>
+            <div class="card" onclick="startQuest('Division')"><div class="card-icon-container bg-division">🏰➗</div><h3>Division</h3><p>Perfect divisions</p></div>
+            <div class="card" onclick="startQuest('Fractions')"><div class="card-icon-container bg-fractions">🍰</div><h3>Fractions</h3><p>Visual math</p></div>
+            <div class="card" onclick="startQuest('Time')"><div class="card-icon-container bg-time">⏰</div><h3>Time</h3><p>Reading clocks</p></div>
+            <div class="card" onclick="startQuest('Money')"><div class="card-icon-container bg-money">💎</div><h3>Money</h3><p>Making change</p></div>
         </div>
     </div>
 
-    <div id="game-view">
-        <div class="nav-buttons">
-            <button class="back-btn" onclick="goBack()">🔙 Back to Castle</button>
-            <div class="score-board">Gold: <span id="game-score">0</span></div>
+    <!-- ================= QUEST VIEW ================= -->
+    <div id="quest-view" class="hidden">
+        <div class="header">
+            <button class="music-btn" onclick="toggleMusic()">🎵 Music</button>
+            <div class="stat-badge" style="margin: 0 auto;">Session Gold: <span id="session-gold">0</span></div>
         </div>
-        
-        <h1 id="game-title">Quest</h1>
-        <p>Solve the problem to earn gold!</p>
-        
-        <div class="problem" id="problem">?</div>
-        <input type="number" id="answer" placeholder="Ans" autofocus>
-        <br>
-        <button class="submit-btn" onclick="checkAnswer()">Cast Spell!</button>
 
-        <div class="message" id="message"></div>
+        <div class="quest-container">
+            <h2 class="quest-title" id="quest-title">Math Quest</h2>
+            <p id="quest-instruction">Solve the problem to earn gold!</p>
+            
+            <!-- Dynamic Problem Display Areas -->
+            <div id="display-standard" class="problem-text">?</div>
+            <canvas id="display-canvas" class="problem-canvas hidden" width="200" height="200"></canvas>
+            <div id="display-money" class="problem-money hidden"></div>
+
+            <!-- Dynamic Input Areas -->
+            <div id="input-standard" class="input-group">
+                <input type="number" id="ans-standard" placeholder="Ans" class="quest-input">
+            </div>
+            
+            <div id="input-time" class="input-group hidden input-time">
+                <input type="number" id="ans-hour" placeholder="HH" class="quest-input"> : 
+                <input type="number" id="ans-minute" placeholder="MM" class="quest-input">
+            </div>
+
+            <div id="input-fraction" class="input-group hidden input-fraction">
+                <input type="number" id="ans-num" placeholder="Num" class="quest-input"> / 
+                <input type="number" id="ans-den" placeholder="Den" class="quest-input">
+            </div>
+
+            <div id="input-money" class="input-group hidden">
+                $ <input type="number" id="ans-money" placeholder="0.00" step="0.01" class="quest-input">
+            </div>
+
+            <br>
+            <button class="action-btn" onclick="checkAnswer()">Submit Answer</button>
+            <div class="message" id="message"></div>
+            <br>
+            <button class="action-btn back-btn" onclick="exitQuest()">🔙 Back to Academy</button>
+        </div>
     </div>
 
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-        let currentMode = '';
-        let correctAnswer = 0;
-        let globalScore = 0;
+        let playerGold = 0; let playerLevel = 0; const goldPerLevel = 100;
+        let currentMode = ''; let sessionGoldEarned = 0;
+        
+        // Answer States
+        let correctStandard = 0;
+        let correctHour = 0, correctMinute = 0;
+        let correctNum = 0, correctDen = 0;
+        let correctMoneyCents = 0; 
 
-        function startGame(mode) {
-            currentMode = mode;
-            document.getElementById('dashboard-view').style.display = 'none';
-            document.getElementById('game-view').style.display = 'block';
-            document.getElementById('game-title').innerText = mode + ' Quest ✨';
-            document.getElementById('message').innerText = '';
+        // --- Web Audio API for Sound Effects ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.type = 'square'; 
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            } else if (type === 'wrong') {
+                oscillator.frequency.setValueAtTime(300, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            }
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.2);
+        }
+
+        function toggleMusic() {
+            let music = document.getElementById("bgMusic");
+            music.paused ? music.play() : music.pause();
+        }
+
+        // --- Core System ---
+        function loadProgress() {
+            let savedGold = localStorage.getItem('mathQuestGold');
+            if (savedGold !== null) playerGold = parseInt(savedGold);
+            updateStatsUI();
+        }
+
+        function updateStatsUI() {
+            playerLevel = Math.floor(playerGold / goldPerLevel);
+            let progressPercentage = ((playerGold % goldPerLevel) / goldPerLevel) * 100;
+            document.getElementById('gold-display').innerText = playerGold;
+            document.getElementById('level-display').innerText = playerLevel;
+            document.getElementById('level-fill-bar').style.width = progressPercentage + '%';
+            localStorage.setItem('mathQuestGold', playerGold);
+        }
+
+        // --- Display Switcher ---
+        function setDisplayMode(mode) {
+            // Hide all
+            document.querySelectorAll('.problem-text, .problem-canvas, .problem-money, .input-group').forEach(el => el.classList.add('hidden'));
+            
+            if (['Addition', 'Subtraction', 'Multiplication', 'Division'].includes(mode)) {
+                document.getElementById('display-standard').classList.remove('hidden');
+                document.getElementById('input-standard').classList.remove('hidden');
+                document.getElementById('quest-instruction').innerText = "Solve the equation!";
+            } else if (mode === 'Fractions') {
+                document.getElementById('display-canvas').classList.remove('hidden');
+                document.getElementById('input-fraction').classList.remove('hidden');
+                document.getElementById('quest-instruction').innerText = "What fraction is pink?";
+            } else if (mode === 'Time') {
+                document.getElementById('display-canvas').classList.remove('hidden');
+                document.getElementById('input-time').classList.remove('hidden');
+                document.getElementById('quest-instruction').innerText = "What time does the clock show?";
+            } else if (mode === 'Money') {
+                document.getElementById('display-money').classList.remove('hidden');
+                document.getElementById('input-money').classList.remove('hidden');
+                document.getElementById('quest-instruction').innerText = "How much money is this?";
+            }
+        }
+
+        function startQuest(mode) {
+            currentMode = mode; sessionGoldEarned = 0;
+            document.getElementById('session-gold').innerText = sessionGoldEarned;
+            document.getElementById('quest-title').innerText = mode + ' Quest!';
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('quest-view').classList.remove('hidden');
+            setDisplayMode(mode);
             generateProblem();
         }
 
-        function goBack() {
-            document.getElementById('game-view').style.display = 'none';
-            document.getElementById('dashboard-view').style.display = 'block';
+        function exitQuest() {
+            playerGold += sessionGoldEarned;
+            updateStatsUI();
+            document.getElementById('quest-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden');
         }
 
-        function generateProblem() {
-            let problemText = "";
-            let num1, num2;
+        // --- Drawing Tools ---
+        function drawFraction(num, den) {
+            const canvas = document.getElementById('display-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, 200, 200);
+            const cx = 100, cy = 100, r = 90;
+            
+            for(let i=0; i<den; i++) {
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, r, i * 2 * Math.PI / den, (i+1) * 2 * Math.PI / den);
+                ctx.fillStyle = i < num ? 'var(--accent-pink)' : '#f0f0f0';
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = '#1E1B4B';
+                ctx.stroke();
+            }
+        }
 
-            switch(currentMode) {
-                case 'Addition':
-                    num1 = Math.floor(Math.random() * 90) + 10; // 10 to 99
-                    num2 = Math.floor(Math.random() * 90) + 10;
-                    correctAnswer = num1 + num2;
-                    problemText = num1 + " + " + num2 + " = ?";
-                    break;
-                case 'Subtraction':
-                    num1 = Math.floor(Math.random() * 100) + 50; 
-                    num2 = Math.floor(Math.random() * 49) + 1; // Ensure no negative answers
-                    correctAnswer = num1 - num2;
-                    problemText = num1 + " - " + num2 + " = ?";
-                    break;
-                case 'Multiplication':
-                    num1 = Math.floor(Math.random() * 11) + 2; // 2 to 12
-                    num2 = Math.floor(Math.random() * 11) + 2;
-                    correctAnswer = num1 * num2;
-                    problemText = num1 + " × " + num2 + " = ?";
-                    break;
-                case 'Division':
-                    num2 = Math.floor(Math.random() * 11) + 2; // Divisor (2 to 12)
-                    correctAnswer = Math.floor(Math.random() * 11) + 2; // Quotient (2 to 12)
-                    num1 = num2 * correctAnswer; // Dividend
-                    problemText = num1 + " ÷ " + num2 + " = ?";
-                    break;
-                case 'Fractions':
-                    let denom = Math.floor(Math.random() * 5) + 4; // Denominator 4 to 8
-                    num1 = Math.floor(Math.random() * 3) + 1;
-                    num2 = Math.floor(Math.random() * 3) + 1;
-                    correctAnswer = num1 + num2;
-                    problemText = num1 + "/" + denom + " + " + num2 + "/" + denom + " = ?/" + denom;
-                    break;
-                case 'Time':
-                    let hours = Math.floor(Math.random() * 4) + 2; // 2 to 5 hours
-                    correctAnswer = hours * 60;
-                    problemText = "How many minutes are in " + hours + " hours?";
-                    break;
-                case 'Money':
-                    let quarters = Math.floor(Math.random() * 4) + 1;
-                    let dimes = Math.floor(Math.random() * 5) + 1;
-                    correctAnswer = (quarters * 25) + (dimes * 10);
-                    problemText = quarters + " quarters and " + dimes + " dimes = ? cents";
-                    break;
+        function drawClock(hour, minute) {
+            const canvas = document.getElementById('display-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, 200, 200);
+            const cx = 100, cy = 100, r = 90;
+            
+            // Draw face
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2*Math.PI); 
+            ctx.fillStyle='#FFF'; ctx.fill(); 
+            ctx.lineWidth=4; ctx.strokeStyle='#1E1B4B'; ctx.stroke();
+            
+            // Draw tick marks
+            for(let i=0; i<12; i++) {
+                let angle = i * Math.PI / 6;
+                ctx.beginPath();
+                ctx.moveTo(cx + Math.cos(angle)*(r-10), cy + Math.sin(angle)*(r-10));
+                ctx.lineTo(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r);
+                ctx.lineWidth = 3; ctx.stroke();
             }
 
-            document.getElementById("problem").innerText = problemText;
-            document.getElementById("answer").value = '';
-            document.getElementById("answer").focus();
+            // Calculate angles
+            const hourAngle = (hour % 12 + minute/60) * (Math.PI * 2) / 12 - Math.PI/2;
+            const minAngle = minute * (Math.PI * 2) / 60 - Math.PI/2;
+            
+            // Hour hand (Short & Thick)
+            ctx.beginPath(); ctx.moveTo(cx,cy); 
+            ctx.lineTo(cx + 45*Math.cos(hourAngle), cy + 45*Math.sin(hourAngle)); 
+            ctx.lineWidth=6; ctx.lineCap='round'; ctx.stroke();
+            
+            // Minute hand (Long & Thin)
+            ctx.beginPath(); ctx.moveTo(cx,cy); 
+            ctx.lineTo(cx + 70*Math.cos(minAngle), cy + 70*Math.sin(minAngle)); 
+            ctx.lineWidth=4; ctx.strokeStyle='var(--accent-pink)'; ctx.stroke();
+
+            // Center dot
+            ctx.beginPath(); ctx.arc(cx, cy, 5, 0, 2*Math.PI); ctx.fillStyle='#1E1B4B'; ctx.fill();
+        }
+
+        // --- Math Engine ---
+        function generateProblem() {
+            // Clear inputs
+            document.querySelectorAll('.quest-input').forEach(inp => inp.value = '');
+            document.getElementById("message").innerText = '';
+
+            if (['Addition', 'Subtraction', 'Multiplication', 'Division'].includes(currentMode)) {
+                let num1, num2, operator;
+                if (currentMode === 'Addition') { num1 = Math.floor(Math.random() * 90) + 10; num2 = Math.floor(Math.random() * 90) + 10; correctStandard = num1 + num2; operator = '+'; } 
+                else if (currentMode === 'Subtraction') { num1 = Math.floor(Math.random() * 90) + 20; num2 = Math.floor(Math.random() * (num1 - 10)) + 10; correctStandard = num1 - num2; operator = '-'; } 
+                else if (currentMode === 'Multiplication') { num1 = Math.floor(Math.random() * 11) + 2; num2 = Math.floor(Math.random() * 11) + 2; correctStandard = num1 * num2; operator = '×'; } 
+                else if (currentMode === 'Division') { num2 = Math.floor(Math.random() * 11) + 2; correctStandard = Math.floor(Math.random() * 11) + 2; num1 = num2 * correctStandard; operator = '÷'; }
+                document.getElementById("display-standard").innerText = `${num1} ${operator} ${num2}`;
+                document.getElementById("ans-standard").focus();
+            } 
+            else if (currentMode === 'Fractions') {
+                const denominators = [2, 3, 4, 5, 6, 8];
+                correctDen = denominators[Math.floor(Math.random() * denominators.length)];
+                correctNum = Math.floor(Math.random() * (correctDen - 1)) + 1; // 1 to Den-1
+                drawFraction(correctNum, correctDen);
+                document.getElementById("ans-num").focus();
+            }
+            else if (currentMode === 'Time') {
+                correctHour = Math.floor(Math.random() * 12) + 1;
+                correctMinute = Math.floor(Math.random() * 12) * 5; // Nearest 5 minutes
+                drawClock(correctHour, correctMinute);
+                document.getElementById("ans-hour").focus();
+            }
+            else if (currentMode === 'Money') {
+                let dollars = Math.floor(Math.random() * 4); // 0-3
+                let quarters = Math.floor(Math.random() * 4); // 0-3
+                let dimes = Math.floor(Math.random() * 4); // 0-3
+                let nickels = Math.floor(Math.random() * 2); // 0-1
+                
+                // Ensure there is always *some* money
+                if(dollars===0 && quarters===0 && dimes===0) quarters = 1; 
+                
+                correctMoneyCents = (dollars * 100) + (quarters * 25) + (dimes * 10) + (nickels * 5);
+                
+                let moneyStr = '';
+                for(let i=0; i<dollars; i++) moneyStr += '💵 ';
+                for(let i=0; i<quarters; i++) moneyStr += '🪙<span style="font-size:0.4em">25¢</span> ';
+                for(let i=0; i<dimes; i++) moneyStr += '🪙<span style="font-size:0.4em">10¢</span> ';
+                for(let i=0; i<nickels; i++) moneyStr += '🪙<span style="font-size:0.4em">5¢</span> ';
+                
+                document.getElementById("display-money").innerHTML = moneyStr;
+                document.getElementById("ans-money").focus();
+            }
         }
 
         function checkAnswer() {
-            let userAnswer = parseInt(document.getElementById("answer").value);
+            let isCorrect = false;
+
+            if (['Addition', 'Subtraction', 'Multiplication', 'Division'].includes(currentMode)) {
+                let userAns = parseInt(document.getElementById("ans-standard").value);
+                if (userAns === correctStandard) isCorrect = true;
+            } 
+            else if (currentMode === 'Fractions') {
+                let uNum = parseInt(document.getElementById("ans-num").value);
+                let uDen = parseInt(document.getElementById("ans-den").value);
+                if (uNum === correctNum && uDen === correctDen) isCorrect = true;
+            }
+            else if (currentMode === 'Time') {
+                let uHour = parseInt(document.getElementById("ans-hour").value);
+                let uMin = parseInt(document.getElementById("ans-minute").value);
+                // Handle 12:00 vs 0:00 Edge Case
+                if ((uHour === correctHour || (uHour === 12 && correctHour === 0)) && uMin === correctMinute) {
+                    isCorrect = true;
+                }
+            }
+            else if (currentMode === 'Money') {
+                let userAnsFloat = parseFloat(document.getElementById("ans-money").value);
+                // Convert to integer cents to avoid floating point math errors (e.g. 0.1 + 0.2 != 0.3)
+                let userAnsCents = Math.round(userAnsFloat * 100);
+                if (userAnsCents === correctMoneyCents) isCorrect = true;
+            }
+
             let messageEl = document.getElementById("message");
 
-            if (userAnswer === correctAnswer) {
-                globalScore += 10;
-                messageEl.innerText = "✨ Correct! +10 Gold! ✨";
-                messageEl.style.color = "green";
-                updateScore();
-                setTimeout(() => {
-                    messageEl.innerText = "";
-                    generateProblem();
-                }, 1500); // 1.5 second delay before next problem
+            if (isCorrect) {
+                playSound('correct');
+                sessionGoldEarned += 10;
+                document.getElementById('session-gold').innerText = sessionGoldEarned;
+                messageEl.innerText = "✨ Awesome! +10 Gold ✨";
+                messageEl.style.color = "var(--success-green)";
+                setTimeout(generateProblem, 1000);
             } else {
-                messageEl.innerText = "Oops, try again!";
-                messageEl.style.color = "red";
-                document.getElementById("answer").value = '';
-                document.getElementById("answer").focus();
+                playSound('wrong');
+                messageEl.innerText = "Not quite! Check your math.";
+                messageEl.style.color = "var(--accent-pink)";
             }
         }
 
-        function updateScore() {
-            document.getElementById("global-score").innerText = globalScore;
-            document.getElementById("game-score").innerText = globalScore;
-        }
-
-        // Allow pressing "Enter" to submit
-        document.getElementById("answer").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                checkAnswer();
-            }
+        // Allow pressing "Enter" on any input to submit
+        document.querySelectorAll('.quest-input').forEach(input => {
+            input.addEventListener("keypress", function(event) {
+                if (event.key === "Enter") checkAnswer();
+            });
         });
-    </script>
 
+        loadProgress();
+    </script>
 </body>
 </html>
