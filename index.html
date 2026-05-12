@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Quest Dashboard</title>
+    <title>Lemaire Academy</title>
     <style>
         :root {
             --bg-color: #1E1B4B; 
@@ -255,7 +255,8 @@
                 ctx.beginPath();
                 ctx.moveTo(cx, cy);
                 ctx.arc(cx, cy, r, i * 2 * Math.PI / den, (i+1) * 2 * Math.PI / den);
-                ctx.fillStyle = i < num ? 'var(--accent-pink)' : '#f0f0f0';
+                // FIXED: Replaced CSS variable with exact hex code so the canvas can render it correctly
+                ctx.fillStyle = i < num ? '#FF69B4' : '#f0f0f0';
                 ctx.fill();
                 ctx.lineWidth = 3;
                 ctx.strokeStyle = '#1E1B4B';
@@ -295,7 +296,7 @@
             // Minute hand (Long & Thin)
             ctx.beginPath(); ctx.moveTo(cx,cy); 
             ctx.lineTo(cx + 70*Math.cos(minAngle), cy + 70*Math.sin(minAngle)); 
-            ctx.lineWidth=4; ctx.strokeStyle='var(--accent-pink)'; ctx.stroke();
+            ctx.lineWidth=4; ctx.strokeStyle='#FF69B4'; ctx.stroke();
 
             // Center dot
             ctx.beginPath(); ctx.arc(cx, cy, 5, 0, 2*Math.PI); ctx.fillStyle='#1E1B4B'; ctx.fill();
