@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quest Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #1E1B4B;
+            --card-bg: #2D2A6E;
+            --text-main: #FFFFFF;
+            --text-muted: #A5A3D1;
+            --accent-pink: #FF69B4;
+            --accent-yellow: #FFD700;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* --- DASHBOARD STYLES --- */
+        #dashboard-view { display: block; }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .profile-badge {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-bg);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 2px solid var(--accent-yellow);
+        }
+
+        .profile-badge span { font-size: 1.2em; margin-left: 10px; font-weight: bold; }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-pink);
+        }
+
+        .card-icon-container {
+            width: 100%;
+            height: 120px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .bg-addition { background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%); }
+        .bg-subtraction { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
+        .bg-multiplication { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+        .bg-division { background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%); }
+        .bg-fractions { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); }
+        .bg-time { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+        .bg-money { background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); }
+
+        .card h3 { margin: 10px 0 5px 0; font-size: 1.4em; }
+
+        /* --- GAME VIEW STYLES --- */
+        #game-view { 
+            display: none; 
+            background-color: #FFF;
+            color: #333;
+            border: 4px solid var(--accent-yellow);
+            border-radius: 15px;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+        }
+
+        #game-view h1 { color: #1E1B4B; margin-top: 0; }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background-color: #ccc;
+            color: #333;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .back-btn:hover { background-color: #aaa; }
+
+        .problem { font-size: 2.5em; margin: 30px 0; font-weight: bold; }
+        
+        input[type="number"] {
+            font-size: 1.5em;
+            padding: 10px;
+            width: 150px;
+            text-align: center;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .submit-btn {
+            background-color: var(--accent-pink);
+            color: white;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover { background-color: #e0529d; }
+
+        .message { font-size: 1.3em; margin-top: 20px; height: 30px; font-weight: bold; }
+        .score-board { font-size: 1.3em; margin-top: 20px; font-weight: bold; color: #1E1B4B; }
+    </style>
+</head>
+<body>
+
+    <div id="dashboard-view">
+        <div class="header">
+            <div class="profile-badge">
+                🐒 <span>Level 12</span>
+            </div>
+            <h2>Royal Academy 🦄</h2>
+            <div class="profile-badge">
+                Gold: <span id="global-score">0</span>
+            </div>
+        </div>
+
+        <div class="grid-container">
+            <div class="card" onclick="startGame('Addition')">
+                <div class="card-icon-container bg-addition">➕</div>
+                <h3>Addition</h3>
+            </div>
+            <div class="card" onclick="startGame('Subtraction')">
+                <div class="card-icon-container bg-subtraction">➖</div>
+                <h3>Subtraction</h3>
+            </div>
+            <div class="card" onclick="startGame('Multiplication')">
+                <div class="card-icon-container bg-multiplication">👸✖️</div>
+                <h3>Multiplication</h3>
+            </div>
+            <div class="card" onclick="startGame('Division')">
+                <div class="card-icon-container bg-division">🏰➗</div>
+                <h3>Division</h3>
+            </div>
+            <div class="card" onclick="startGame('Fractions')">
+                <div class="card-icon-container bg-fractions">🍰</div>
+                <h3>Fractions</h3>
+            </div>
+            <div class="card" onclick="startGame('Time')">
+                <div class="card-icon-container bg-time">⏰</div>
+                <h3>Time</h3>
+            </div>
+            <div class="card" onclick="startGame('Money')">
+                <div class="card-icon-container bg-money">💎</div>
+                <h3>Money</h3>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-view">
+        <div class="nav-buttons">
+            <button class="back-btn" onclick="goBack()">🔙 Back to Castle</button>
+            <div class="score-board">Gold: <span id="game-score">0</span></div>
+        </div>
+        
+        <h1 id="game-title">Quest</h1>
+        <p>Solve the problem to earn gold!</p>
+        
+        <div class="problem" id="problem">?</div>
+        <input type="number" id="answer" placeholder="Ans" autofocus>
+        <br>
+        <button class="submit-btn" onclick="checkAnswer()">Cast Spell!</button>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        let currentMode = '';
+        let correctAnswer = 0;
+        let globalScore = 0;
+
+        function startGame(mode) {
+            currentMode = mode;
+            document.getElementById('dashboard-view').style.display = 'none';
+            document.getElementById('game-view').style.display = 'block';
+            document.getElementById('game-title').innerText = mode + ' Quest ✨';
+            document.getElementById('message').innerText = '';
+            generateProblem();
+        }
+
+        function goBack() {
+            document.getElementById('game-view').style.display = 'none';
+            document.getElementById('dashboard-view').style.display = 'block';
+        }
+
+        function generateProblem() {
+            let problemText = "";
+            let num1, num2;
+
+            switch(currentMode) {
+                case 'Addition':
+                    num1 = Math.floor(Math.random() * 90) + 10; // 10 to 99
+                    num2 = Math.floor(Math.random() * 90) + 10;
+                    correctAnswer = num1 + num2;
+                    problemText = num1 + " + " + num2 + " = ?";
+                    break;
+                case 'Subtraction':
+                    num1 = Math.floor(Math.random() * 100) + 50; 
+                    num2 = Math.floor(Math.random() * 49) + 1; // Ensure no negative answers
+                    correctAnswer = num1 - num2;
+                    problemText = num1 + " - " + num2 + " = ?";
+                    break;
+                case 'Multiplication':
+                    num1 = Math.floor(Math.random() * 11) + 2; // 2 to 12
+                    num2 = Math.floor(Math.random() * 11) + 2;
+                    correctAnswer = num1 * num2;
+                    problemText = num1 + " × " + num2 + " = ?";
+                    break;
+                case 'Division':
+                    num2 = Math.floor(Math.random() * 11) + 2; // Divisor (2 to 12)
+                    correctAnswer = Math.floor(Math.random() * 11) + 2; // Quotient (2 to 12)
+                    num1 = num2 * correctAnswer; // Dividend
+                    problemText = num1 + " ÷ " + num2 + " = ?";
+                    break;
+                case 'Fractions':
+                    let denom = Math.floor(Math.random() * 5) + 4; // Denominator 4 to 8
+                    num1 = Math.floor(Math.random() * 3) + 1;
+                    num2 = Math.floor(Math.random() * 3) + 1;
+                    correctAnswer = num1 + num2;
+                    problemText = num1 + "/" + denom + " + " + num2 + "/" + denom + " = ?/" + denom;
+                    break;
+                case 'Time':
+                    let hours = Math.floor(Math.random() * 4) + 2; // 2 to 5 hours
+                    correctAnswer = hours * 60;
+                    problemText = "How many minutes are in " + hours + " hours?";
+                    break;
+                case 'Money':
+                    let quarters = Math.floor(Math.random() * 4) + 1;
+                    let dimes = Math.floor(Math.random() * 5) + 1;
+                    correctAnswer = (quarters * 25) + (dimes * 10);
+                    problemText = quarters + " quarters and " + dimes + " dimes = ? cents";
+                    break;
+            }
+
+            document.getElementById("problem").innerText = problemText;
+            document.getElementById("answer").value = '';
+            document.getElementById("answer").focus();
+        }
+
+        function checkAnswer() {
+            let userAnswer = parseInt(document.getElementById("answer").value);
+            let messageEl = document.getElementById("message");
+
+            if (userAnswer === correctAnswer) {
+                globalScore += 10;
+                messageEl.innerText = "✨ Correct! +10 Gold! ✨";
+                messageEl.style.color = "green";
+                updateScore();
+                setTimeout(() => {
+                    messageEl.innerText = "";
+                    generateProblem();
+                }, 1500); // 1.5 second delay before next problem
+            } else {
+                messageEl.innerText = "Oops, try again!";
+                messageEl.style.color = "red";
+                document.getElementById("answer").value = '';
+                document.getElementById("answer").focus();
+            }
+        }
+
+        function updateScore() {
+            document.getElementById("global-score").innerText = globalScore;
+            document.getElementById("game-score").innerText = globalScore;
+        }
+
+        // Allow pressing "Enter" to submit
+        document.getElementById("answer").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkAnswer();
+            }
+        });
+    </script>
+
+</body>
+</html>
